@@ -27,3 +27,5 @@
 *.exe
 *.out
 *.app
+.idea/
+/Necessary_Packages/mips-x86.linux-xgcc/
