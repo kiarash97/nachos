@@ -16,11 +16,6 @@ Thread* PQScheduler::FindNextToRun(){
 
 void PQScheduler::ReadyToRun(Thread* thread){
 	DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
-	printf("FuckYou");
-	printf("FuckYou");
-	printf("FuckYou");
-	printf("FuckYou");
-
 	thread->setStatus(READY);
 	PQreadyList->SortedInsert((void*) thread,thread->priority);
 }
