@@ -28,9 +28,9 @@ void
 SimpleThread(int which)
 {
     int num;
-    
+
     for (num = 0; num < 5; num++) {
-	printf("*** thread %d looped %d times\n", which, num);
+        printf("*** thread %d looped %d times\n", which, num);
         currentThread->Yield();
     }
 }
@@ -42,13 +42,20 @@ SimpleThread(int which)
 //----------------------------------------------------------------------
 
 void
-ThreadTest1()
+PQThreadTest1()
 {
     DEBUG('t', "Entering ThreadTest1");
 
-    Thread *t = new Thread("forked thread");
-
-    t->Fork(SimpleThread, 1);
+    Thread *t1 = new Thread("forked thread");
+    Thread *t2 = new Thread("forked thread");
+    Thread *t3 = new Thread("forked thread");
+    t1->priority=1;
+    t2->priority=2;
+    t3->priority=3;
+    currentThread->priority=0;
+    t1->Fork(SimpleThread, 1);
+    t2->Fork(SimpleThread, 2);
+    t3->Fork(SimpleThread, 3);
     SimpleThread(0);
 }
 
@@ -61,12 +68,12 @@ void
 ThreadTest()
 {
     switch (testnum) {
-    case 1:
-	ThreadTest1();
-	break;
-    default:
-	printf("No test specified.\n");
-	break;
+        case 1:
+            PQThreadTest1();
+            break;
+        default:
+            printf("No test specified.\n");
+            break;
     }
 }
 
