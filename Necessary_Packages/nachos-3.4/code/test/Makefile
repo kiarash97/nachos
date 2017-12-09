@@ -31,9 +31,9 @@ CPPFLAGS = $(INCDIR)
 
 PATH = $(GCCDIR):/lib:/usr/bin:/bin
 
-CC = $(GCCDIR)gcc
+CC = $(GCCDIR)mips-gcc
 AS = $(GCCDIR)as
-LD = $(GCCDIR)ld
+LD = $(GCCDIR)mips-ld
 
 CPP = gcc -E
 INCDIR =-I../userprog -I../threads
