@@ -40,7 +40,7 @@ Scheduler::Scheduler()
 Scheduler::~Scheduler()
 { 
     delete readyList; 
-} 
+}
 
 //----------------------------------------------------------------------
 // Scheduler::ReadyToRun
@@ -50,14 +50,14 @@ Scheduler::~Scheduler()
 //	"thread" is the thread to be put on the ready list.
 //----------------------------------------------------------------------
 
-void
-Scheduler::ReadyToRun (Thread *thread)
-{
-    DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
-
-    thread->setStatus(READY);
-    readyList->Append((void *)thread);
-}
+//void
+//Scheduler::ReadyToRun (Thread *thread)
+//{
+//    DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
+//
+//    thread->setStatus(READY);
+//    readyList->Append((void *)thread);
+//}
 
 //----------------------------------------------------------------------
 // Scheduler::FindNextToRun
@@ -67,11 +67,11 @@ Scheduler::ReadyToRun (Thread *thread)
 //	Thread is removed from the ready list.
 //----------------------------------------------------------------------
 
-Thread *
-Scheduler::FindNextToRun ()
-{
-    return (Thread *)readyList->Remove();
-}
+//Thread *
+//Scheduler::FindNextToRun ()
+//{
+//    return (Thread *)readyList->Remove();
+//}
 
 //----------------------------------------------------------------------
 // Scheduler::Run
