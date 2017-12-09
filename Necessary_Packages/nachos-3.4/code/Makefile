@@ -5,7 +5,7 @@
 MAKE = $(MAKE_CMD)
 LPR = lpr
 
-all: 
+all:
 	cd threads; $(MAKE) depend
 	cd threads; $(MAKE) nachos
 	cd userprog; $(MAKE) depend 
