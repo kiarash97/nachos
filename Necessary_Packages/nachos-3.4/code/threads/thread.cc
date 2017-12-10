@@ -138,7 +138,13 @@ Thread::CheckOverflow()
 // 	NOTE: we disable interrupts, so that we don't get a time slice 
 //	between setting threadToBeDestroyed, and going to sleep.
 //----------------------------------------------------------------------
+ void Thread::settimejobdone(int arg){
 
+    timejobdone=arg;
+ }
+    int Thread::rettimejobdone(){
+        return timejobdone;
+    }
 //
 void
 Thread::Finish ()

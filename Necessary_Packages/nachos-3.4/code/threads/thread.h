@@ -78,10 +78,12 @@ private:
     // NOTE: DO NOT CHANGE the order of these first two members.
     // THEY MUST be in this position for SWITCH to work.
     int* stackTop;			 // the current stack pointer
-    int machineState[MachineStateSize];  // all registers except for stackTop
+    int machineState[MachineStateSize];
+    int timejobdone;
+    // all registers except for stackTop
 
 public:
-    int timejobdone;
+    
     int startTime;
     int finishTime;
     int priority;
@@ -105,6 +107,8 @@ public:
     void setStatus(ThreadStatus st) { status = st; }
     char* getName() { return (name); }
     void Print() { printf("%s, ", name); }
+    void settimejobdone(int arg);
+    int rettimejobdone();
 
 private:
     // some of the private data for this class is listed above

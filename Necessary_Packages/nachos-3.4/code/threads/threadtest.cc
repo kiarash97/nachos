@@ -27,12 +27,15 @@ int testnum = 1;
 void
 SimpleThread(int which)
 {
-    int num;
-
+    int num,j=0;
+    // delay(2000);
     for (num = 0; num < 5; num++) {
-        printf("*** thread %d looped %d times\n", which, num);
+        for (long int i=0;i<2000000000;i++){j++;}
+        printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
+
         currentThread->Yield();
     }
+    //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
 }
 
 //----------------------------------------------------------------------
@@ -53,6 +56,7 @@ PQThreadTest1()
     t2->priority=2;
     t3->priority=3;
     currentThread->priority=0;
+    currentThread->startTime=time(0);
     t1->Fork(SimpleThread, 1);
     t2->Fork(SimpleThread, 2);
     t3->Fork(SimpleThread, 3);

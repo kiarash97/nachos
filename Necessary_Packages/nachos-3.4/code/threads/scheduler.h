@@ -25,7 +25,7 @@ class Scheduler {
     virtual void ReadyToRun(Thread* thread)=0;	// Thread can be dispatched.
     virtual Thread* FindNextToRun()=0;		// Dequeue first thread on the ready
 					// list, if any, and return thread.
-    void Run(Thread* nextThread);	// Cause nextThread to start running
+    virtual void Run(Thread* nextThread)=0;	// Cause nextThread to start running
     void Print();			// Print contents of ready list
     
   private:

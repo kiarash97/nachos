@@ -24,11 +24,15 @@ Thread* SJFScheduler::FindNextToRun(){
 void SJFScheduler::ReadyToRun(Thread* thread){
 	DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
 	thread->setStatus(READY);
-	SJFreadyList->SortedInsert((void*) thread,thread->timejobdone);
+	SJFreadyList->SortedInsert((void*) thread,thread->rettimejobdone());
 }
 
 void SJFScheduler::Run(Thread* nextThread){
 	Thread *oldThread = currentThread;
+	oldThread->finishTime=time(0);
+	// printf("%d\n",oldThread->finishTime);
+	oldThread->settimejobdone(oldThread->finishTime-oldThread->startTime);
+	printf("%d\n",oldThread->rettimejobdone());
 
 	#ifdef USER_PROGRAM			// ignore until running user programs
 	    if (currentThread->space != NULL) {	// if this thread is a user program,
@@ -42,7 +46,7 @@ void SJFScheduler::Run(Thread* nextThread){
 
 	    currentThread = nextThread;		    // switch to the next thread
 	    currentThread->setStatus(RUNNING);      // nextThread is now running
-
+		currentThread->startTime=time(0);
 	    DEBUG('t', "Switching from thread \"%s\" to thread \"%s\"\n",
 		  oldThread->getName(), nextThread->getName());
 
