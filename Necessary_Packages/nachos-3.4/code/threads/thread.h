@@ -84,8 +84,8 @@ private:
 
 public:
     
-    int startTime;
-    int finishTime;
+    unsigned long startTime;
+    unsigned long finishTime;
     int priority;
     Thread(char* debugName);		// initialize a Thread
     ~Thread(); 				// deallocate a Thread

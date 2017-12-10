@@ -11,7 +11,7 @@
 
 #include "copyright.h"
 #include "system.h"
-
+#include <sys/time.h>
 // testnum is set in main.cc
 int testnum = 1;
 
@@ -29,15 +29,55 @@ SimpleThread(int which)
 {
     int num,j=0;
     // delay(2000);
-    for (num = 0; num < 5; num++) {
+    for (num = 0; num < 7; num++) {
         for (long int i=0;i<2000000000;i++){j++;}
-        printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
+        printf("*** simpleThread thread %d looped %d times \n ", which, num);
 
         currentThread->Yield();
     }
     //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
 }
+void
+SimpleThread1(int which)
+{
+    int num,j=0;
+    
+    // delay(2000);
+    for (num = 0; num < 7; num++) {
+        for (long int i=0;i<2500000000;i++){j++;}
+        printf("*** simpleThread1 thread %d looped %d times \n ", which, num);
 
+        currentThread->Yield();
+    }
+    //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
+}
+void
+SimpleThread2(int which)
+{
+    int num,j=0;
+
+    // delay(2000);
+    for (num = 0; num < 7; num++) {
+        for (long int i=0;i<2700000000;i++){j++;}
+        printf("*** simpleThread2 thread %d looped %d times\n ", which, num);
+
+        currentThread->Yield();
+    }
+    //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
+}
+void
+SimpleThread3(int which)
+{
+    int num,j=0;
+    // delay(2000);
+    for (num = 0; num < 7; num++) {
+        for (long int i=0;i<3000000000;i++){j++;}
+        printf("*** simpleThread3 thread %d looped %d times\n ", which, num);
+
+        currentThread->Yield();
+    }
+    //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
+}
 //----------------------------------------------------------------------
 // ThreadTest1
 // 	Set up a ping-pong between two threads, by forking a thread 
@@ -56,10 +96,13 @@ PQThreadTest1()
     t2->priority=2;
     t3->priority=3;
     currentThread->priority=0;
-    currentThread->startTime=time(0);
-    t1->Fork(SimpleThread, 1);
-    t2->Fork(SimpleThread, 2);
-    t3->Fork(SimpleThread, 3);
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    unsigned long time_in_micros = 1000000 * tv.tv_sec + tv.tv_usec;
+    currentThread->startTime=time_in_micros;
+    t1->Fork(SimpleThread1, 1);
+    t2->Fork(SimpleThread2, 2);
+    t3->Fork(SimpleThread3, 3);
     SimpleThread(0);
 }
 

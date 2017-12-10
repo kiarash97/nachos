@@ -7,6 +7,7 @@
 
 #include "SJFScheduler.h"
 #include "ctime"
+#include <sys/time.h>
 SJFScheduler::SJFScheduler() {
 	// TODO Auto-generated constructor stub
 	SJFreadyList = new List;
@@ -29,7 +30,10 @@ void SJFScheduler::ReadyToRun(Thread* thread){
 
 void SJFScheduler::Run(Thread* nextThread){
 	Thread *oldThread = currentThread;
-	oldThread->finishTime=time(0);
+	struct timeval tv;
+	gettimeofday(&tv,NULL);
+	unsigned long time_in_micros = 1000000 * tv.tv_sec + tv.tv_usec;
+	oldThread->finishTime=time_in_micros;
 	// printf("%d\n",oldThread->finishTime);
 	oldThread->settimejobdone(oldThread->finishTime-oldThread->startTime);
 	printf("%d\n",oldThread->rettimejobdone());
@@ -45,8 +49,13 @@ void SJFScheduler::Run(Thread* nextThread){
 						    // had an undetected stack overflow
 
 	    currentThread = nextThread;		    // switch to the next thread
-	    currentThread->setStatus(RUNNING);      // nextThread is now running
-		currentThread->startTime=time(0);
+	    currentThread->setStatus(RUNNING);
+	    
+	    // nextThread is now running
+	    struct timeval tvv;
+	    gettimeofday(&tvv,NULL);
+	    unsigned long time_in_micross = 1000000 * tvv.tv_sec + tvv.tv_usec;
+	    currentThread->startTime=time_in_micross;
 	    DEBUG('t', "Switching from thread \"%s\" to thread \"%s\"\n",
 		  oldThread->getName(), nextThread->getName());
 
