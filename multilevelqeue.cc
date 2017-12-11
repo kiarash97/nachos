@@ -32,7 +32,7 @@ void multilevelScheduler::ReadyToRunPQ(Thread* thread){
 	multilevelPQ->SortedInsert((void*) thread,thread->priority;
 }
 
-void SJFScheduler::Run(Thread* nextThread){
+void multilevelScheduler::Run(Thread* nextThread){
 	Thread *oldThread = currentThread;
 
 	#ifdef USER_PROGRAM			// ignore until running user programs
