@@ -41,7 +41,8 @@ main.o: ../threads/main.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/scheduler.h \
  ../threads/list.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../threads/utility.h \
- ../threads/PQScheduler.h ../threads/SJFScheduler.h
+ ../threads/PQScheduler.h ../threads/SJFScheduler.h \
+ ../threads/multilevelqeue.h
 list.o: ../threads/list.cc /usr/include/stdc-predef.h \
  ../threads/copyright.h ../threads/list.h ../threads/utility.h \
  ../threads/bool.h ../machine/sysdep.h ../threads/copyright.h \
@@ -81,7 +82,7 @@ scheduler.o: ../threads/scheduler.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/system.h \
  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
  ../machine/timer.h ../threads/utility.h ../threads/PQScheduler.h \
- ../threads/SJFScheduler.h
+ ../threads/SJFScheduler.h ../threads/multilevelqeue.h
 PQScheduler.o: ../threads/PQScheduler.cc /usr/include/stdc-predef.h \
  ../threads/PQScheduler.h ../threads/scheduler.h ../threads/copyright.h \
  ../threads/list.h ../threads/utility.h ../threads/bool.h \
@@ -126,7 +127,8 @@ synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/list.h \
  ../threads/system.h ../threads/scheduler.h ../machine/interrupt.h \
  ../threads/list.h ../machine/stats.h ../machine/timer.h \
- ../threads/utility.h ../threads/PQScheduler.h ../threads/SJFScheduler.h
+ ../threads/utility.h ../threads/PQScheduler.h ../threads/SJFScheduler.h \
+ ../threads/multilevelqeue.h
 synchlist.o: ../threads/synchlist.cc /usr/include/stdc-predef.h \
  ../threads/copyright.h ../threads/synchlist.h ../threads/list.h \
  ../threads/utility.h ../threads/bool.h ../machine/sysdep.h \
@@ -172,7 +174,8 @@ system.o: ../threads/system.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/scheduler.h \
  ../threads/list.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../threads/utility.h \
- ../threads/PQScheduler.h ../threads/SJFScheduler.h
+ ../threads/PQScheduler.h ../threads/SJFScheduler.h \
+ ../threads/multilevelqeue.h
 thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  ../threads/copyright.h ../threads/thread.h ../threads/utility.h \
  ../threads/bool.h ../machine/sysdep.h ../threads/copyright.h \
@@ -197,7 +200,8 @@ thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  ../threads/synch.h ../threads/list.h ../threads/system.h \
  ../threads/scheduler.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../threads/utility.h \
- ../threads/PQScheduler.h ../threads/SJFScheduler.h
+ ../threads/PQScheduler.h ../threads/SJFScheduler.h \
+ ../threads/multilevelqeue.h
 utility.o: ../threads/utility.cc /usr/include/stdc-predef.h \
  ../threads/copyright.h ../threads/utility.h ../threads/bool.h \
  ../machine/sysdep.h ../threads/copyright.h /usr/include/stdio.h \
@@ -237,7 +241,7 @@ threadtest.o: ../threads/threadtest.cc /usr/include/stdc-predef.h \
  ../threads/list.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../threads/utility.h \
  ../threads/PQScheduler.h ../threads/SJFScheduler.h \
- /usr/include/x86_64-linux-gnu/sys/time.h \
+ ../threads/multilevelqeue.h /usr/include/x86_64-linux-gnu/sys/time.h \
  /usr/include/x86_64-linux-gnu/sys/select.h \
  /usr/include/x86_64-linux-gnu/bits/select.h \
  /usr/include/x86_64-linux-gnu/bits/sigset.h
@@ -265,7 +269,8 @@ interrupt.o: ../machine/interrupt.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/scheduler.h \
  ../threads/list.h ../machine/interrupt.h ../machine/stats.h \
  ../machine/timer.h ../threads/utility.h ../threads/PQScheduler.h \
- ../threads/SJFScheduler.h ../threads/system.h
+ ../threads/SJFScheduler.h ../threads/system.h \
+ ../threads/multilevelqeue.h
 sysdep.o: ../machine/sysdep.cc /usr/include/stdc-predef.h \
  ../threads/copyright.h /usr/include/stdio.h /usr/include/features.h \
  /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -331,7 +336,8 @@ sysdep.o: ../machine/sysdep.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/scheduler.h \
  ../threads/list.h ../machine/interrupt.h ../machine/stats.h \
  ../machine/timer.h ../threads/utility.h ../threads/PQScheduler.h \
- ../threads/SJFScheduler.h ../threads/system.h
+ ../threads/SJFScheduler.h ../threads/system.h \
+ ../threads/multilevelqeue.h
 stats.o: ../machine/stats.cc /usr/include/stdc-predef.h \
  ../threads/copyright.h ../threads/utility.h ../threads/copyright.h \
  ../threads/bool.h ../machine/sysdep.h /usr/include/stdio.h \
@@ -371,7 +377,8 @@ timer.o: ../machine/timer.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/scheduler.h \
  ../threads/list.h ../machine/interrupt.h ../threads/list.h \
  ../machine/stats.h ../machine/timer.h ../threads/PQScheduler.h \
- ../threads/SJFScheduler.h ../threads/system.h
+ ../threads/SJFScheduler.h ../threads/system.h \
+ ../threads/multilevelqeue.h
 SJFScheduler.o: ../threads/SJFScheduler.cc /usr/include/stdc-predef.h \
  ../threads/SJFScheduler.h ../threads/scheduler.h ../threads/copyright.h \
  ../threads/list.h ../threads/utility.h ../threads/bool.h \
@@ -395,10 +402,35 @@ SJFScheduler.o: ../threads/SJFScheduler.cc /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/system.h \
  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
  ../machine/timer.h ../threads/utility.h ../threads/PQScheduler.h \
- /usr/include/x86_64-linux-gnu/sys/time.h \
+ ../threads/multilevelqeue.h /usr/include/x86_64-linux-gnu/sys/time.h \
  /usr/include/x86_64-linux-gnu/sys/select.h \
  /usr/include/x86_64-linux-gnu/bits/select.h \
  /usr/include/x86_64-linux-gnu/bits/sigset.h
+multilevelqeue.o: ../threads/multilevelqeue.cc /usr/include/stdc-predef.h \
+ ../threads/multilevelqeue.h ../threads/scheduler.h \
+ ../threads/copyright.h ../threads/list.h ../threads/utility.h \
+ ../threads/bool.h ../machine/sysdep.h ../threads/copyright.h \
+ /usr/include/stdio.h /usr/include/features.h \
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h /usr/include/libio.h \
+ /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
+ /usr/include/xlocale.h ../threads/thread.h /usr/include/c++/4.9/ctime \
+ /usr/include/x86_64-linux-gnu/c++/4.9/bits/c++config.h \
+ /usr/include/x86_64-linux-gnu/c++/4.9/bits/os_defines.h \
+ /usr/include/x86_64-linux-gnu/c++/4.9/bits/cpu_defines.h \
+ /usr/include/time.h /usr/include/x86_64-linux-gnu/bits/time.h \
+ /usr/include/x86_64-linux-gnu/bits/timex.h ../threads/system.h \
+ ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
+ ../machine/timer.h ../threads/utility.h ../threads/PQScheduler.h \
+ ../threads/SJFScheduler.h
 # DEPENDENCIES MUST END AT END OF FILE
 # IF YOU PUT STUFF HERE IT WILL GO AWAY
 # see make depend above

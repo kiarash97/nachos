@@ -92,7 +92,7 @@ PQThreadTest1()
     Thread *t1 = new Thread("forked thread");
     Thread *t2 = new Thread("forked thread");
     Thread *t3 = new Thread("forked thread");
-    t1->priority=1;
+    //t1->priority=1;
     t2->priority=2;
     t3->priority=3;
     currentThread->priority=0;
@@ -105,7 +105,6 @@ PQThreadTest1()
     t3->Fork(SimpleThread3, 3);
     SimpleThread(0);
 }
-
 //----------------------------------------------------------------------
 // ThreadTest
 // 	Invoke a test routine.

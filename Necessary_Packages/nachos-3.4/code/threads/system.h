@@ -17,6 +17,7 @@
 #include "timer.h"
 #include "PQScheduler.h"
 #include "SJFScheduler.h"
+#include "multilevelqeue.h"
 // Initialization and cleanup routines
 extern void Initialize(int argc, char **argv); 	// Initialization,
 						// called before anything else

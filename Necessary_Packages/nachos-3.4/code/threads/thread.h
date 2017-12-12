@@ -86,7 +86,7 @@ public:
     
     unsigned long startTime;
     unsigned long finishTime;
-    int priority;
+    int priority=-1;
     Thread(char* debugName);		// initialize a Thread
     ~Thread(); 				// deallocate a Thread
     // NOTE -- thread being deleted

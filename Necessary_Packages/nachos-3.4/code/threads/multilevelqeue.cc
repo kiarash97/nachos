@@ -13,7 +13,7 @@ multilevelqeue::~multilevelqeue() {
 }
 
 Thread* multilevelqeue::FindNextToRun(){
-    if (!(multilevelSJF.IsEmpty())){
+    if (!(multilevelSJF->IsEmpty())){
         return (Thread*)multilevelSJF->SortedRemove(NULL);
     }
     else
