@@ -8,6 +8,7 @@
 #include "SJFScheduler.h"
 #include "ctime"
 #include <sys/time.h>
+
 SJFScheduler::SJFScheduler() {
 	// TODO Auto-generated constructor stub
 	SJFreadyList = new List;
@@ -19,7 +20,8 @@ SJFScheduler::~SJFScheduler() {
 }
 
 Thread* SJFScheduler::FindNextToRun(){
-	return (Thread*)SJFreadyList->SortedRemove(NULL);
+	Thread* t=(Thread*)SJFreadyList->SortedRemove(NULL);
+	return t;
 }
 
 void SJFScheduler::ReadyToRun(Thread* thread){
@@ -30,13 +32,13 @@ void SJFScheduler::ReadyToRun(Thread* thread){
 
 void SJFScheduler::Run(Thread* nextThread){
 	Thread *oldThread = currentThread;
+
 	struct timeval tv;
 	gettimeofday(&tv,NULL);
-	unsigned long time_in_micros = 1000000 * tv.tv_sec + tv.tv_usec;
-	oldThread->finishTime=time_in_micros;
-	// printf("%d\n",oldThread->finishTime);
-	oldThread->settimejobdone(oldThread->finishTime-oldThread->startTime);
-	printf("%d\n",oldThread->rettimejobdone());
+	unsigned long long time_in_micros = 1000000ll * tv.tv_sec + tv.tv_usec;//get time in micro second
+	oldThread->finishTime=time_in_micros;//set finishtime for old thread
+	oldThread->settimejobdone(oldThread->finishTime-oldThread->startTime);//set the time needed
+																			//for job to done
 
 	#ifdef USER_PROGRAM			// ignore until running user programs
 	    if (currentThread->space != NULL) {	// if this thread is a user program,
@@ -49,13 +51,11 @@ void SJFScheduler::Run(Thread* nextThread){
 						    // had an undetected stack overflow
 
 	    currentThread = nextThread;		    // switch to the next thread
-	    currentThread->setStatus(RUNNING);
-	    
-	    // nextThread is now running
+	    currentThread->setStatus(RUNNING);      // nextThread is now running
 	    struct timeval tvv;
-	    gettimeofday(&tvv,NULL);
-	    unsigned long time_in_micross = 1000000 * tvv.tv_sec + tvv.tv_usec;
-	    currentThread->startTime=time_in_micross;
+		gettimeofday(&tvv,NULL);
+		unsigned long long time_in_micross = 1000000ll * tvv.tv_sec + tvv.tv_usec;//get time in micro second
+		currentThread->startTime=time_in_micross;//set starttime for current thread
 	    DEBUG('t', "Switching from thread \"%s\" to thread \"%s\"\n",
 		  oldThread->getName(), nextThread->getName());
 
@@ -63,7 +63,10 @@ void SJFScheduler::Run(Thread* nextThread){
 	    // in switch.s.  You may have to think
 	    // a bit to figure out what happens after this, both from the point
 	    // of view of the thread and from the perspective of the "outside world".
+
 	    SWITCH(oldThread, nextThread);
+
+
 	    DEBUG('t', "Now in thread \"%s\"\n", currentThread->getName());
 
 	    // If the old thread gave up the processor because it was finishing,

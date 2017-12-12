@@ -13,11 +13,11 @@
 #include "thread.h"
 #include "scheduler.h"
 #include "interrupt.h"
-#include "stats.h"
-#include "timer.h"
 #include "PQScheduler.h"
 #include "SJFScheduler.h"
-#include "multilevelqeue.h"
+#include "MLTQScheduler.h"
+#include "stats.h"
+#include "timer.h"
 // Initialization and cleanup routines
 extern void Initialize(int argc, char **argv); 	// Initialization,
 						// called before anything else
@@ -29,7 +29,11 @@ extern Thread *threadToBeDestroyed;  		// the thread that just finished
 extern Scheduler *scheduler;			// the ready list
 extern Interrupt *interrupt;			// interrupt status
 extern Statistics *stats;			// performance metrics
-extern Timer *timer;				// the hardware alarm clock
+extern Timer *timer;// the hardware alarm clock
+#ifndef SCHEDULER_NUMBER
+#define SCHEDULER_NUMBER
+extern int schedulerNumber;
+#endif
 
 #ifdef USER_PROGRAM
 #include "machine.h"

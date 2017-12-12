@@ -79,13 +79,13 @@ private:
     // THEY MUST be in this position for SWITCH to work.
     int* stackTop;			 // the current stack pointer
     int machineState[MachineStateSize];
-    int timejobdone;
+    long long timejobdone=0;
     // all registers except for stackTop
 
 public:
-    
-    unsigned long startTime;
-    unsigned long finishTime;
+
+    long long startTime=0;
+    long long finishTime=0;
     int priority=-1;
     Thread(char* debugName);		// initialize a Thread
     ~Thread(); 				// deallocate a Thread

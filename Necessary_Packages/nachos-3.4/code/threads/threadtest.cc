@@ -12,6 +12,7 @@
 #include "copyright.h"
 #include "system.h"
 #include <sys/time.h>
+
 // testnum is set in main.cc
 int testnum = 1;
 
@@ -25,53 +26,72 @@ int testnum = 1;
 //----------------------------------------------------------------------
 
 void
-SimpleThread(int which)
-{
-    int num,j=0;
-    // delay(2000);
-    for (num = 0; num < 7; num++) {
-        for (long int i=0;i<2000000000;i++){j++;}
-        printf("*** simpleThread thread %d looped %d times \n ", which, num);
-
+SimpleThread1pq(int which) {
+    int num;
+    for (num = 0; num < 5; num++) {
+        printf("*** thread %d looped %d times\n", which, num);
         currentThread->Yield();
     }
-    //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
 }
+
 void
-SimpleThread1(int which)
-{
-    int num,j=0;
-    
+SimpleThread2pq(int which) {
+    int num;
+    for (int x = 0; x < 100000; x++) {}
+    for (num = 0; num < 5; num++) {
+        printf("*** thread %d looped %d times\n", which, num);
+        currentThread->Yield();
+    }
+}
+
+void
+SimpleThread(int which) {
+    int num, j = 0;
+
     // delay(2000);
-    for (num = 0; num < 7; num++) {
-        for (long int i=0;i<2500000000;i++){j++;}
+    for (num = 0; num < 10; num++) {
+        for (long int i = 0; i < 2000000; i++) { j++; }
         printf("*** simpleThread1 thread %d looped %d times \n ", which, num);
 
         currentThread->Yield();
     }
     //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
 }
+
 void
-SimpleThread2(int which)
-{
-    int num,j=0;
+SimpleThread1(int which) {
+    int num, j = 0;
 
     // delay(2000);
-    for (num = 0; num < 7; num++) {
-        for (long int i=0;i<2700000000;i++){j++;}
+    for (num = 0; num < 10; num++) {
+        for (long int i = 0; i < 3000000; i++) { j++; }
+        printf("*** simpleThread1 thread %d looped %d times \n ", which, num);
+
+        currentThread->Yield();
+    }
+    //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
+}
+
+void
+SimpleThread2(int which) {
+    int num, j = 0;
+
+    // delay(2000);
+    for (num = 0; num < 10; num++) {
+        for (long int i = 0; i < 4000000; i++) { j++; }
         printf("*** simpleThread2 thread %d looped %d times\n ", which, num);
 
         currentThread->Yield();
     }
     //printf("*** thread %d looped %d times , time =%d\n ", which, num,currentThread->finishTime);
 }
+
 void
-SimpleThread3(int which)
-{
-    int num,j=0;
+SimpleThread3(int which) {
+    int num, j = 0;
     // delay(2000);
-    for (num = 0; num < 7; num++) {
-        for (long int i=0;i<3000000000;i++){j++;}
+    for (num = 0; num < 10; num++) {
+        for (long int i = 0; i < 5000000; i++) { j++; }
         printf("*** simpleThread3 thread %d looped %d times\n ", which, num);
 
         currentThread->Yield();
@@ -84,26 +104,55 @@ SimpleThread3(int which)
 //	to call SimpleThread, and then calling SimpleThread ourselves.
 //----------------------------------------------------------------------
 
-void
-PQThreadTest1()
-{
+void PQThreadTest() {
     DEBUG('t', "Entering ThreadTest1");
 
     Thread *t1 = new Thread("forked thread");
     Thread *t2 = new Thread("forked thread");
     Thread *t3 = new Thread("forked thread");
-    //t1->priority=1;
-    t2->priority=2;
-    t3->priority=3;
-    currentThread->priority=0;
+    t1->priority = 1;
+    t2->priority = 2;
+    t3->priority = 3;
+    currentThread->priority = 0;
+    t1->Fork(SimpleThread1pq, 1);
+    t2->Fork(SimpleThread2pq, 2);
+    t3->Fork(SimpleThread1pq, 3);
+    SimpleThread1pq(0);
+}
+
+void SJFThreadTest() {
+    DEBUG('t', "Entering ThreadTest1");
+    Thread *t1 = new Thread("1forked thread");
+    Thread *t2 = new Thread("2forked thread");
+    Thread *t3 = new Thread("3forked thread");
     struct timeval tv;
-    gettimeofday(&tv,NULL);
-    unsigned long time_in_micros = 1000000 * tv.tv_sec + tv.tv_usec;
-    currentThread->startTime=time_in_micros;
+    gettimeofday(&tv, NULL);
+    unsigned long long time_in_micros = 1000000ll * tv.tv_sec + tv.tv_usec;
+    currentThread->startTime = time_in_micros;
+
     t1->Fork(SimpleThread1, 1);
     t2->Fork(SimpleThread2, 2);
     t3->Fork(SimpleThread3, 3);
     SimpleThread(0);
+}
+
+void MLTQThreadTest() {
+    DEBUG('t', "Entering ThreadTest1");
+    Thread *t1 = new Thread("1forked thread");
+    Thread *t2 = new Thread("2forked thread");
+    Thread *t3 = new Thread("3forked thread");
+    t1->priority = 1;
+    t2->priority = 2;
+    t3->priority = 3;
+    t1->Fork(SimpleThread1, 1);
+    t2->Fork(SimpleThread2, 2);
+    t3->Fork(SimpleThread3, 3);
+    Thread *t4 = new Thread("4forked thread");
+    Thread *t5 = new Thread("5forked thread");
+    Thread *t6 = new Thread("6forked thread");
+    t4->Fork(SimpleThread1, 4);
+    t5->Fork(SimpleThread2, 5);
+    t6->Fork(SimpleThread3, 6);
 }
 //----------------------------------------------------------------------
 // ThreadTest
@@ -111,11 +160,16 @@ PQThreadTest1()
 //----------------------------------------------------------------------
 
 void
-ThreadTest()
-{
-    switch (testnum) {
+ThreadTest() {
+    switch (schedulerNumber) {
         case 1:
-            PQThreadTest1();
+            PQThreadTest();
+            break;
+        case 2:
+            SJFThreadTest();
+            break;
+        case 3:
+            MLTQThreadTest();
             break;
         default:
             printf("No test specified.\n");
