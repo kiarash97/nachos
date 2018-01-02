@@ -24,6 +24,7 @@
 #include "copyright.h"
 #include "system.h"
 #include "syscall.h"
+#include "../threads/system.h"
 
 //----------------------------------------------------------------------
 // ExceptionHandler
@@ -47,17 +48,89 @@
 //	"which" is the kind of exception.  The list of possible exceptions 
 //	are in machine.h.
 //----------------------------------------------------------------------
-
-void
-ExceptionHandler(ExceptionType which)
+void HandleFork();
+void HandleJoin();
+void ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
 
-    if ((which == SyscallException) && (type == SC_Halt)) {
-	DEBUG('a', "Shutdown, initiated by user program.\n");
-   	interrupt->Halt();
-    } else {
-	printf("Unexpected user mode exception %d %d\n", which, type);
-	ASSERT(FALSE);
+    if (which==SyscallException)
+    {
+        switch(type){
+            case SC_Halt:
+                DEBUG('a', "Shutdown, initiated by user program.\n\n");
+               	interrupt->Halt();
+                break;
+
+            case SC_Fork:
+                HandleFork();
+                break;
+
+            case SC_Exit:
+                printf ("thread %d finished\n \n",currentThread->threadID);
+                currentThread->Finish();
+                machine->IncrementPCReg();
+                break;
+            case SC_Join:
+                HandleJoin();
+                break;
+        }
     }
+    else
+    {
+	    printf("Unexpected user mode exception %d %d\n", which, type);
+	    ASSERT(FALSE);
+    }
+}
+
+void TestFunction(int bullShit)
+{
+    printf("i'm forked thread %d \n\n",currentThread->threadID);
+    #ifdef USER_PROGRAM
+    if (currentThread->space != NULL) {		// if there is an address space
+        currentThread->RestoreUserState();     // to restore, do it.
+	    currentThread->space->RestoreState();
+    }
+    #endif
+    machine->WriteRegister(2,0);
+    machine->IncrementPCReg();
+    machine->Run();
+}
+
+void HandleFork()
+{
+    currentThread->SaveUserState();
+    AddrSpace* newAddressSpace = new AddrSpace(currentThread->space);
+
+    Thread* newThread = new Thread(currentThread,"forked");
+    newThread->space = newAddressSpace;
+
+    machine->WriteRegister(2,newThread->threadID);
+    machine->IncrementPCReg();
+
+    newThread->Fork(TestFunction,0);
+}
+
+
+bool NotFinished(int childID)
+{
+    List* RunningList = scheduler->getReadyList();
+    ListElement* element = RunningList->first;
+    Thread* thread;
+    while (element != NULL)
+    {
+        thread = (Thread*) element->item;
+        element = element->next;
+        if (thread->threadID == childID)
+        return true;
+    }
+    return false;
+}
+
+void HandleJoin()
+{
+    
+    int childID = machine->ReadRegister(4);
+    while (NotFinished(childID)) currentThread->Yield();
+    machine->IncrementPCReg();
 }
