@@ -1,0 +1,210 @@
+control threads/main.cc
+control userprog/progtest.cc
+control machine/machine.cc
+control machine/interrupt.cc
+control machine/translate.cc
+control userprog/exception.cc
+control threads/system.cc
+control threads/thread.cc
+
+
+title Sequence Diagram of NachOS
+
+note left of machine/machine.cc:methods of\nmachine.cc\nimplemented\nin mipssim.cc  
+threads/main.cc->userprog/progtest.cc: startprocess(char *file)
+
+userprog/progtest.cc->machine/machine.cc:Machine::Machine(bool debug)
+note over machine/machine.cc: Initialize mainMemory
+userprog/progtest.cc<--machine/machine.cc:<<OK>>
+userprog/progtest.cc->machine/machine.cc: Run()
+
+machine/machine.cc->machine/interrupt.cc: setStatus(UserMode)
+
+
+machine/interrupt.cc-->machine/machine.cc: <<OK>>
+machine/machine.cc->machine/machine.cc:Instruction::Instruction()
+
+loop 
+
+machine/machine.cc->machine/machine.cc: OneInstruction(Instruction *instr)
+
+group Fetch instruction
+
+machine/machine.cc->machine/translate.cc: ReadMem(int addr, int size, int *value)
+machine/translate.cc->machine/translate.cc: Translate(addr, &phisycalAddres, size, FALSE)
+machine/translate.cc-->machine/translate.cc: ExceptionType exception
+
+
+
+
+group if (exception != NoException)
+
+machine/translate.cc->machine/machine.cc: RaiseException(exception, addr)
+
+machine/machine.cc->machine/interrupt.cc:setStatus(SystemMode)
+machine/machine.cc<--machine/interrupt.cc:<<OK>>
+machine/machine.cc->userprog/exception.cc: ExceptionHandler(exception)
+note over userprog/exception.cc:         handle exception\naccording to exception type
+
+userprog/exception.cc-->machine/machine.cc: <<OK>>
+
+machine/machine.cc->machine/interrupt.cc:setStatus(UserMode)
+machine/machine.cc<--machine/interrupt.cc:<<OK>>
+machine/machine.cc-->machine/translate.cc:<<OK>>
+machine/translate.cc-->machine/machine.cc: return FALSE
+end 
+
+alt case 1
+note over machine/translate.cc: data = machine->mainMemory[physicalAddress]\n*value = data
+else case 2
+note over machine/translate.cc: data = *(unsigned short *) &machine->mainMemory[physicalAddress]\n*value = ShortToHost(data)
+else case 4
+note over machine/translate.cc: data = *(unsigned int *) &machine->mainMemory[physicalAddress]\n*value = WordToHost(data)
+end 
+
+machine/machine.cc<--machine/translate.cc:return TRUE
+end
+
+group Execute the instruction
+
+alt Register update
+note over machine/machine.cc: modify the appropriate register
+else Read memory
+machine/machine.cc->machine/translate.cc: ReadMem(int addr, int size, int *value)
+machine/translate.cc->machine/translate.cc: Translate(addr, &phisycalAddres, size, FALSE)
+machine/translate.cc-->machine/translate.cc: ExceptionType exception
+
+
+
+
+group if (exception != NoException)
+
+machine/translate.cc->machine/machine.cc: RaiseException(exception, addr)
+
+machine/machine.cc->machine/interrupt.cc:setStatus(SystemMode)
+machine/machine.cc<--machine/interrupt.cc:<<OK>>
+machine/machine.cc->userprog/exception.cc: ExceptionHandler(exception)
+note over userprog/exception.cc:         handle exception\naccording to exception type
+
+userprog/exception.cc-->machine/machine.cc: <<OK>>
+
+machine/machine.cc->machine/interrupt.cc:setStatus(UserMode)
+machine/machine.cc<--machine/interrupt.cc:<<OK>>
+machine/machine.cc-->machine/translate.cc:<<OK>>
+machine/translate.cc-->machine/machine.cc: return FALSE
+end 
+
+alt case 1
+note over machine/translate.cc: data = machine->mainMemory[physicalAddress]\n*value = data
+else case 2
+note over machine/translate.cc: data = *(unsigned short *) &machine->mainMemory[physicalAddress]\n*value = ShortToHost(data)
+else case 4
+note over machine/translate.cc: data = *(unsigned int *) &machine->mainMemory[physicalAddress]\n*value = WordToHost(data)
+end 
+
+machine/machine.cc<--machine/translate.cc:return TRUE
+else Write memory
+machine/machine.cc->machine/translate.cc: ReadMem(int addr, int size, int *value)
+machine/translate.cc->machine/translate.cc: Translate(addr, &phisycalAddres, size, FALSE)
+machine/translate.cc-->machine/translate.cc: ExceptionType exception
+
+
+
+
+group if (exception != NoException)
+
+machine/translate.cc->machine/machine.cc: RaiseException(exception, addr)
+
+machine/machine.cc->machine/interrupt.cc:setStatus(SystemMode)
+machine/machine.cc<--machine/interrupt.cc:<<OK>>
+machine/machine.cc->userprog/exception.cc: ExceptionHandler(exception)
+note over userprog/exception.cc:         handle exception\naccording to exception type
+
+userprog/exception.cc-->machine/machine.cc: <<OK>>
+
+machine/machine.cc->machine/interrupt.cc:setStatus(UserMode)
+machine/machine.cc<--machine/interrupt.cc:<<OK>>
+machine/machine.cc-->machine/translate.cc:<<OK>>
+machine/translate.cc-->machine/machine.cc: return FALSE
+end 
+
+alt case 1
+note over machine/translate.cc: machine->mainMemory[physicalAddress] = (unsigned char) (value & 0xff)
+else case 2
+note over machine/translate.cc: *(unsigned short *) &machine->mainMemory[physicalAddress]\n= ShortToMachine((unsigned short) (value & 0xffff))
+else case 4
+note over machine/translate.cc: *(unsigned int *) &machine->mainMemory[physicalAddress]\n= WordToMachine((unsigned int) value)
+end 
+
+machine/machine.cc<--machine/translate.cc:return TRUE
+end
+
+note over machine/machine.cc:   if any error occur while executing\nan instruction, an exception is raised
+
+end 
+
+machine/machine.cc->machine/interrupt.cc:OneTick()
+
+alt if (status == SystemMode)
+note over machine/interrupt.cc: stats->totalTicks += SystemTick\nstats->systemTicks += SystemTick
+else else
+note over machine/interrupt.cc: stats->totalTicks += UserTick\nstats->userTicks += UserTick
+end
+
+note over machine/interrupt.cc: #turn off interrupts\nChangeLevel(IntOn, IntOff)
+
+group while (CheckIfDue(FALSE))
+
+note over machine/interrupt.cc:check for pending interrupts
+machine/interrupt.cc->machine/interrupt.cc: CheckIfDue(bool advanceClock)
+note over machine/interrupt.cc: PendingInterrupt *toOccur\n= (PendingInterrupt *) pending->SortedRemove(&when)
+
+alt if (toOccur == NULL)
+note over machine/interrupt.cc: no pending interrupts
+machine/interrupt.cc-->machine/interrupt.cc: FALSE
+else if (advanceClock && when > stats->totalTicks)
+note over machine/interrupt.cc: #advance the clock\nstats->idleTicks += (when - stats->totalTicks)\nstats->totalTicks = when
+else else if (when > stats->totalTicks)
+note over machine/interrupt.cc: #not time yet, put it back\npending->SortedInsert(toOccur, when)
+machine/interrupt.cc-->machine/interrupt.cc: FALSE
+else Check if there is nothing more to do so quit
+note over machine/interrupt.cc: pending->SortedInsert(toOccur, when)
+machine/interrupt.cc-->machine/interrupt.cc: FALSE
+end 
+
+note over machine/interrupt.cc: call the interrupt handler
+
+machine/interrupt.cc->threads/system.cc: TimerInterruptHandler(int dummy)
+
+group if (interrupt->getStatus() != IdleMode)
+machine/interrupt.cc<-threads/system.cc:YieldOnReturn()
+note over machine/interrupt.cc: yieldOnReturn = TRUE
+
+machine/interrupt.cc-->threads/system.cc:<<OK>>
+machine/interrupt.cc<--threads/system.cc:<<OK>>
+end
+
+note over machine/interrupt.cc: restore the machine status
+
+machine/interrupt.cc-->machine/interrupt.cc: TRUE
+
+end 
+
+note over machine/interrupt.cc: #re-enable interrupts\nChangeLevel(IntOff, IntOn)
+
+group if (yieldOnReturn)
+
+note over machine/interrupt.cc: yieldOnReturn = FALSE\nstatus = SystemMode
+machine/machine.cc->threads/thread.cc:currentThread->Yield()
+
+
+threads/thread.cc -->machine/machine.cc:<<OK>>
+end 
+
+
+machine/machine.cc<--machine/interrupt.cc:<<OK>>
+end
+
+
+
+
